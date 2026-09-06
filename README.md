@@ -1,37 +1,41 @@
-# Mi Comunidad "Los Robles"
+# Plataforma Mi Comunidad Los Robles
 
-Aplicación React correspondiente al Sprint 1 del proyecto: **Padrón, usuarios y acceso**.
+Proyecto académico desarrollado en React para la administración del fraccionamiento Residencial Los Robles.
 
-## Funcionalidades implementadas
+## Tecnologías
 
-- Registro y consulta de viviendas.
-- Alta de usuarios vinculados a una vivienda.
-- Asignación de roles: Residente, Tesorería, Secretaría, Mesa Directiva y Administrador.
-- Validación de correos únicos y de viviendas duplicadas.
-- Consentimiento de privacidad obligatorio antes de crear un usuario.
-- Persistencia local con `localStorage`.
-- Tablero y criterios de terminado del Sprint 1.
+- React
+- Vite
+- JavaScript
+- CSS
+- React Router DOM
+- localStorage
 
-## Ejecutar localmente
+## Funcionalidades actuales
+
+- Inicio y avisos
+- Viviendas y residentes
+- Perfiles de prueba
+- Tesorería
+- Estados de cuenta
+- Cargos y abonos
+- Caja chica
+- Aprobaciones de ajustes financieros
+
+## Instalación
 
 ```bash
 npm install
+```
+
+## Ejecutar
+
+```bash
 npm run dev
 ```
 
-Abre la URL que Vite indique en la terminal.
-
-## GitHub
-
-Para publicar el código:
+## Compilar
 
 ```bash
-git init
-git add .
-git commit -m "Sprint 1: padrón, usuarios y acceso"
-git branch -M main
-git remote add origin https://github.com/TU-USUARIO/mi-comunidad-los-robles.git
-git push -u origin main
+npm run build
 ```
-
-Sustituye `TU-USUARIO` por tu cuenta y crea antes el repositorio vacío en GitHub.
