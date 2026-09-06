@@ -1,0 +1,2 @@
+const perfiles = ['TestUsuario', 'TestTesoreria', 'TestAuxiliarTesoreria', 'TestAuxiliar', 'TestPresidente'];
+export default function SelectorPerfilPrueba({ perfilActual, alCambiar }) { return <div className="selector-perfil"><span>Modo de prueba</span><div>{perfiles.map(perfil => <button key={perfil} className={perfil === perfilActual ? 'activo' : ''} onClick={() => alCambiar(perfil)}>{perfil.replace('Test', '')}</button>)}</div><small>Perfil actual: {perfilActual}</small></div>; }
