@@ -1,6 +1,16 @@
+import { auditarCambios } from './auditoria.js';
 const claves = { perfil: 'los_robles_perfil_prueba', residentes: 'los_robles_residentes', movimientos: 'los_robles_movimientos', caja: 'los_robles_caja_chica', historialCaja: 'los_robles_historial_caja_chica', movimientosCaja: 'los_robles_movimientos_caja', ajustes: 'los_robles_ajustes_manuales' };
 const obtener = (clave, valor = []) => { try { return JSON.parse(localStorage.getItem(clave)) ?? valor; } catch { return valor; } };
-const guardar = (clave, valor) => localStorage.setItem(clave, JSON.stringify(valor));
+const guardar = (clave, valor) => {
+  const anterior = obtener(clave, null);
+  localStorage.setItem(clave, JSON.stringify(valor));
+  try { auditarCambios(clave, anterior, valor); }
+  catch (error) {
+    if (anterior === null) localStorage.removeItem(clave);
+    else localStorage.setItem(clave, JSON.stringify(anterior));
+    throw error;
+  }
+};
 export const obtenerPerfilPrueba = () => localStorage.getItem(claves.perfil) || 'TestPresidente';
 export const guardarPerfilPrueba = perfil => localStorage.setItem(claves.perfil, perfil);
 export const obtenerResidentes = () => obtener(claves.residentes);
