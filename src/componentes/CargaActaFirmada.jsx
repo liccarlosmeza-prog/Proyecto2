@@ -1,0 +1,15 @@
+import { useState } from 'react';
+import { cargarActaFirmada } from '../servicios/actas';
+import { useUrlArchivo } from './ArchivoLocal';
+export function ArchivoActaRecibida({ documento, alVer }) {
+  const url = useUrlArchivo(documento.blob);
+  return <article className="registro-fase2"><div><strong>{documento.nombre}</strong><p>Recibido {new Date(documento.fecha).toLocaleString('es-MX')} · {(documento.bytes / 1024 / 1024).toFixed(2)} MB</p>{documento.observaciones && <p>{documento.observaciones}</p>}<details><summary>Huella del archivo</summary><code className="huella-pdf">{documento.huella}</code></details></div><button className="secundario" onClick={() => alVer(documento.blob)}>Ver acta recibida</button><a className="boton-enlace" href={url} download={documento.nombre}>Descargar acta recibida</a></article>;
+}
+export default function CargaActaFirmada({ acta, perfilActual, alGuardar }) {
+  const [seleccion, setSeleccion] = useState(null), [confirmado, setConfirmado] = useState(false), [ocupado, setOcupado] = useState(false), [error, setError] = useState(''), [observaciones, setObservaciones] = useState('');
+  return <form className="seguimiento-formulario" onSubmit={async evento => {
+    evento.preventDefault(); setError(''); setOcupado(true);
+    try { await cargarActaFirmada(acta.id, seleccion?.archivo, perfilActual, seleccion?.version, confirmado, observaciones); setSeleccion(null); setConfirmado(false); setObservaciones(''); evento.target.reset(); await alGuardar(); }
+    catch (fallo) { setError(fallo.message); } finally { setOcupado(false); }
+  }}><h3>Cargar acta con firmas autógrafas</h3><p>Adjunta el PDF completo de {acta.folio}, incluyendo las hojas firmadas de la Mesa Directiva y participantes. Se conserva también el documento que se entregó para firmas.</p><fieldset disabled={ocupado}><label className="boton-archivo" htmlFor="pdf-acta-devuelta">Seleccionar PDF firmado</label><input id="pdf-acta-devuelta" type="file" accept=".pdf,application/pdf" onChange={evento => { const archivo = evento.target.files?.[0]; setSeleccion(archivo ? { archivo, version: acta.version } : null); setConfirmado(false); setError(''); }}/>{seleccion && <p className="archivo">{seleccion.archivo.name} · {(seleccion.archivo.size / 1024 / 1024).toFixed(2)} MB</p>}<p className="ayuda">PDF legible sin contraseña, hasta 20 MB. La carga registra la recepción; las firmas se revisan manualmente.</p><label>Observaciones de recepción (opcional)<textarea maxLength={500} value={observaciones} onChange={evento => setObservaciones(evento.target.value)}/></label><label className="checkbox"><input type="checkbox" checked={confirmado} onChange={evento => setConfirmado(evento.target.checked)} required/> Confirmo que revisé las firmas y que el documento corresponde a esta acta.</label>{error && <p role="alert" className="mensaje-error">{error}</p>}<button disabled={!seleccion || !confirmado}>{ocupado ? 'Validando y guardando…' : 'Guardar acta firmada recibida'}</button></fieldset></form>;
+}

@@ -11,11 +11,11 @@ const guardar = (clave, valor) => {
     throw error;
   }
 };
-export const obtenerPerfilPrueba = () => localStorage.getItem(claves.perfil) || 'TestPresidente';
+export const obtenerPerfilPrueba = () => { const perfil = localStorage.getItem(claves.perfil); return perfil === 'TestSecretaria' ? 'TestAuxiliar' : perfil || 'TestPresidente'; };
 export const guardarPerfilPrueba = perfil => localStorage.setItem(claves.perfil, perfil);
 export const obtenerResidentes = () => obtener(claves.residentes);
 export const guardarResidentes = residentes => guardar(claves.residentes, residentes);
-const normalizarRol = rol => String(rol || '').replace(/\s/g, '').toLowerCase();
+const normalizarRol = rol => String(rol || '').replace(/\s/g, '').toLowerCase().replace(/^tesorera$/, 'tesorero');
 export const obtenerResidentesPorRol = rol => obtenerResidentes().filter(residente => residente.mesa === true && residente.estatus !== 'Inactiva' && normalizarRol(residente.rol) === normalizarRol(rol));
 export const obtenerTesoreros = () => obtenerResidentesPorRol('Tesorero');
 export const obtenerAuxiliaresTesoreria = () => obtenerResidentesPorRol('AuxiliarTesoreria');
