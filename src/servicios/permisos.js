@@ -9,6 +9,6 @@ export const permisosPerfiles = {
 export const puedeConsultarBitacora = perfil => ['TestAuxiliar', 'TestPresidente', 'TestAuditor'].includes(perfil);
 export const puedeConsultarHistoricoPagos = perfil => puedeConsultarBitacora(perfil) || perfil === 'TestTesoreria';
 export const filtrarEventosAuditoria = (eventos, perfil) => puedeConsultarBitacora(perfil) ? eventos : perfil === 'TestTesoreria' ? eventos.filter(evento => evento.modulo === 'Pagos') : [];
-export const tienePermiso = (perfil, permiso) => permiso === 'actas' ? Boolean(permisosPerfiles[perfil]) : permiso === 'mantenimiento' ? Boolean(permisosPerfiles[perfil]) && perfil !== 'TestAuditor' : permiso === 'auditoria' ? puedeConsultarHistoricoPagos(perfil) : Boolean(permisosPerfiles[perfil]?.[permiso]);
+export const tienePermiso = (perfil, permiso) => permiso === 'directorio' ? Boolean(permisosPerfiles[perfil]) : permiso === 'reportes' ? ['TestPresidente', 'TestAuxiliar', 'TestTesoreria', 'TestAuditor'].includes(perfil) : permiso === 'actas' ? Boolean(permisosPerfiles[perfil]) : permiso === 'mantenimiento' ? Boolean(permisosPerfiles[perfil]) && perfil !== 'TestAuditor' : permiso === 'auditoria' ? puedeConsultarHistoricoPagos(perfil) : Boolean(permisosPerfiles[perfil]?.[permiso]);
 export const esTesorero = perfil => perfil === 'TestTesoreria' || perfil === 'TestPresidente';
 export const esAuxiliarTesoreria = perfil => perfil === 'TestAuxiliarTesoreria';
