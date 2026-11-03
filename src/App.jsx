@@ -12,6 +12,7 @@ import Movimientos from './paginas/Movimientos';
 import CajaChica from './paginas/CajaChica';
 import AjustesManuales from './paginas/AjustesManuales';
 import Bitacora from './paginas/Bitacora';
+const CuotasProyectos=lazy(()=>import('./paginas/CuotasProyectos'));
 const ActasAsamblea = lazy(() => import('./paginas/ActasAsamblea'));
 const Directorio = lazy(() => import('./paginas/Directorio'));
 const ReportesIndicadores = lazy(() => import('./paginas/ReportesIndicadores'));
@@ -23,6 +24,7 @@ export default function App() {
   const cambiar = nuevo => { guardarPerfilPrueba(nuevo); setPerfil(nuevo); };
   const protegida = (permiso, elemento) => <RutaProtegida perfilActual={perfil} permiso={permiso}>{elemento}</RutaProtegida>;
   return <><Encabezado perfilActual={perfil} alCambiarPerfil={cambiar}/><Suspense fallback={<main><p role="status">Cargando módulo…</p></main>}><Routes>
+    <Route path="/cuotas-proyectos" element={protegida('reportes',<CuotasProyectos perfilActual={perfil}/>)}/>
     <Route path="/" element={<Inicio perfilActual={perfil}/>}/>
     <Route path="/directorio" element={protegida('directorio', <Directorio perfilActual={perfil}/>)}/><Route path="/reportes" element={protegida('reportes', <ReportesIndicadores perfilActual={perfil}/>)}/><Route path="/actas" element={protegida('actas', <ActasAsamblea perfilActual={perfil}/>)}/>
     <Route path="/mantenimiento" element={protegida('mantenimiento', <Mantenimiento perfilActual={perfil}/>)}/>

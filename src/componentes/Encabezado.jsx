@@ -1,2 +1,2 @@
 import { Link } from 'react-router-dom'; import SelectorPerfilPrueba from './SelectorPerfilPrueba';
-export default function Encabezado({ perfilActual, alCambiarPerfil }) { return <header><Link to="/" className="marca"><span>Mi Comunidad</span><strong>LOS ROBLES</strong><small className="fase2-marca">FASE 3 · SEMANA 3</small></Link><SelectorPerfilPrueba perfilActual={perfilActual} alCambiar={alCambiarPerfil}/></header>; }
+export default function Encabezado({ perfilActual, alCambiarPerfil }) { return <header><Link to="/" className="marca"><span>Mi Comunidad</span><strong>LOS ROBLES</strong><small className="fase2-marca">FASE 4 FINAL</small></Link><SelectorPerfilPrueba perfilActual={perfilActual} alCambiar={alCambiarPerfil}/></header>; }

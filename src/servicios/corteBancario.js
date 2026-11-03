@@ -1,6 +1,7 @@
 import { centavos, fechaValida, puedeVerReportes } from './indicadores.js';
 import { listarRegistros, actualizarRegistro } from './baseFase3.js';
 import { registrarEvento } from './auditoria.js';
+export const filasEjemploLayout = [['fecha','referencia','concepto','tipo','monto','titular'],['2026-10-05','EJEMPLO-BORRAR-01','EJEMPLO — BORRAR ANTES DE CARGAR: cuota casa 12','Ingreso',1500,'Persona ficticia de ejemplo'],['2026-10-22','EJEMPLO-BORRAR-02','EJEMPLO — BORRAR ANTES DE CARGAR: reparación de portón','Egreso',900,'Proveedor ficticio de ejemplo']];
 export const administraCortes = perfil => perfil === 'TestTesoreria';
 export function periodoMensual(mes) {
  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(mes||'')) throw new Error('Selecciona el mes completo del corte.');
@@ -33,6 +34,7 @@ export function leerCsvCorte(texto) {
   return filas.map((valores, indice) => {
     if (valores.length !== encabezados.length) throw new Error(`Revisa las columnas del registro ${indice + 2}.`);
     const dato = Object.fromEntries(encabezados.map((campo, posicion) => [campo, valores[posicion]]));
+    if(Object.values(dato).some(v=>v.includes('EJEMPLO-BORRAR')))throw new Error('Borra las dos filas de ejemplo antes de cargar el estado bancario.');
     const tipo = normalizar(dato.tipo);
     if (!fechaValida(dato.fecha) || !['ingreso','egreso'].includes(tipo) || !/^\d+(?:[.,]\d{1,2})?$/.test(dato.monto)) throw new Error(`Registro ${indice + 2}: usa fecha AAAA-MM-DD, tipo Ingreso/Egreso y monto positivo sin separador de miles.`);
     const monto = centavos(dato.monto.replace(',','.'));
@@ -55,7 +57,7 @@ export function conciliarCorte(filas, movimientos, desde, hasta, asignaciones = 
   if (repetidosManuales.length) alertas.push('Una captura fue vinculada a más de un movimiento bancario. Revisa las vinculaciones.');
   const candidatos = fila => validos.filter(movimiento => !usados.has(movimiento.id) && movimiento.fecha === fila.fecha && (movimiento.tipoMovimiento === 'Abono' ? 'Ingreso' : 'Egreso') === fila.tipo && centavos(movimiento.monto) === centavos(fila.monto));
   const resultados = banco.map(fila => ({ ...fila, movimientoId: null, criterio: '' }));
-  // Primero se validan las vinculaciones manuales, después las referencias exactas.
+  // Solo las asociaciones confirmadas manualmente se consideran conciliadas.
   resultados.forEach(fila => {
     const id = asignaciones[fila.id];
     if (!id) return;
@@ -81,10 +83,11 @@ export async function consultarCortes(perfil) {
 export async function importarCorte(texto, nombre, perfil, mes, completo = false) {
   if (!administraCortes(perfil)) throw new Error('Solo Tesorería puede importar un corte.');
   const periodo=periodoMensual(mes);if(!completo)throw new Error('Confirma que el archivo corresponde al mes completo.');
-  const registros = leerCsvCorte(texto), id = crypto.randomUUID(), fecha = new Date().toISOString();
+  const registros = leerCsvCorte(texto), id = 'corte-'+mes, fecha = new Date().toISOString();
   if(registros.some(r=>r.fecha<periodo.desde||r.fecha>periodo.hasta))throw new Error('El archivo contiene movimientos fuera del mes seleccionado.');
+  const existentes=await listarRegistros('cortes');if(existentes.some(c=>c.mes===mes))throw new Error('Ya existe un estado bancario para ese mes. Consulta el corte existente para evitar duplicar asociaciones.');
   const corte = { id, nombre, mes, periodo, mesCompletoConfirmado:true, textoOriginal: texto, registros, asignaciones: {}, fecha, usuario: perfil, version: 1 };
-  await actualizarRegistro('cortes',id,()=>corte);
+  await actualizarRegistro('cortes',id,actual=>{if(actual)throw new Error('El mes ya fue importado en otra pestaña.');return corte;});
   try { registrarEvento({ modulo:'Reportes',accion:'Importación de corte',registroId:id,usuario:perfil,detalle:`${nombre} · ${registros.length} registros` }); } catch { /* El corte original se conserva en IndexedDB. */ }
   return corte;
 }

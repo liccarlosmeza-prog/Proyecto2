@@ -18,7 +18,7 @@ export const guardarResidentes = residentes => guardar(claves.residentes, reside
 const normalizarRol = rol => String(rol || '').replace(/\s/g, '').toLowerCase().replace(/^tesorera$/, 'tesorero');
 export const obtenerResidentesPorRol = rol => obtenerResidentes().filter(residente => residente.mesa === true && residente.estatus !== 'Inactiva' && normalizarRol(residente.rol) === normalizarRol(rol));
 export const obtenerTesoreros = () => obtenerResidentesPorRol('Tesorero');
-export const obtenerAuxiliaresTesoreria = () => obtenerResidentesPorRol('AuxiliarTesoreria');
+export const obtenerAuxiliaresTesoreria = () => obtenerResidentes().filter(r=>r.estatus!=='Inactiva'&&(r.perfilAcceso==='TestAuxiliarTesoreria'||(r.mesa&&normalizarRol(r.rol)==='auxiliartesoreria')));
 export const obtenerResidentePorId = id => obtenerResidentes().find(residente => residente.id === id) || null;
 export const obtenerMovimientos = () => obtener(claves.movimientos);
 export const guardarMovimientos = movimientos => guardar(claves.movimientos, movimientos);

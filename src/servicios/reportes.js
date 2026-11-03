@@ -1,8 +1,9 @@
+import { obtenerPlanes } from './planes.js';
 import { obtenerResidentes, obtenerMovimientos } from './almacenamiento.js';
 import { calcularIndicadores, puedeVerReportes, configuraReportes, mesesPeriodo, centavos } from './indicadores.js';
 import { registrarEvento } from './auditoria.js';
 const clave = 'los_robles_configuracion_indicadores';
-export function obtenerConfiguracion() { return JSON.parse(localStorage.getItem(clave) || '{"cuotaMensual":0,"diaVencimiento":10}'); }
+export function obtenerConfiguracion() { return {...JSON.parse(localStorage.getItem(clave) || '{"cuotaMensual":0,"diaVencimiento":10}'),cuotas:obtenerPlanes().cuotas}; }
 export function guardarConfiguracion(datos, perfil) {
   if (!configuraReportes(perfil)) throw new Error('Solo Presidente y Tesorería pueden configurar las cuotas.');
   const cuotaMensual = centavos(datos.cuotaMensual) / 100, diaVencimiento = Number(datos.diaVencimiento);
