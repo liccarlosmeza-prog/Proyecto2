@@ -1,26 +1,26 @@
 # Mi Comunidad Los Robles
 
-Aplicación web para la administración y comunicación de la comunidad.
+Aplicación web de administración y comunicación comunitaria.
 
-## Etapas
-
-- **Fase 1 · PB03 y PB04:** centro de avisos, lectura, resolución, histórico y bitácora según perfil.
-- **Fase 2 · PB05 y PB06:** actas de asamblea, firma y anexos; mantenimiento con evidencia, seguimiento y cierre.
-- **Fase 3 · PB07 y PB08:** directorio, indicadores y conciliación bancaria mensual manual por Tesorería.
-- **Fase 4 final:** cuotas de mantenimiento por mes y año; proyectos especiales con aportaciones, presupuesto y avance; cobros, estados de cuenta e indicadores separados; ejemplo de layout bancario con dos filas ilustrativas que deben borrarse.
+- **Fase 1:** avisos, histórico y bitácora.
+- **Fase 2:** actas de asamblea y mantenimiento.
+- **Fase 3:** directorio, indicadores y conciliación mensual.
+- **Fase 4:** cuotas variables, proyectos y estados de cuenta.
+- **Producto Integrados U4:** inicio de sesión y gestión de accesos.
 
 ## Visualizar en local
 
-Requiere Node.js y npm. Desde esta carpeta, instalar dependencias la primera vez:
-
 ```bash
 npm ci
+npm run dev -- --host 127.0.0.1 --port 5177 --strictPort --mode demo
 ```
 
-Iniciar la aplicación:
+Abre [http://127.0.0.1:5177/](http://127.0.0.1:5177/) y configura la contraseña inicial. ID de Presidencia: **PRES-001**; Auxiliar: **AUX-001**; vecino de demostración: **Demo001Tit**. Solo en modo demo estas tres cuentas se crean con la contraseña inicial indicada y aparece el selector de simulación. Usa contraseñas ficticias.
 
-```bash
-npm run dev -- --host 127.0.0.1 --port 5176 --strictPort
-```
+El alta de vecinos se tramita en **Viviendas y Residentes**. El ID combina cuatro letras de la calle, número e interior opcional, y termina en **Tit** o **Ren**. Las solicitudes del Auxiliar requieren autorización de Presidencia. En **Viviendas y Residentes**, usa **Acceso al portal** y el mismo botón **Guardar** para definir la contraseña inicial, aprobar solicitudes o restablecer un acceso vecinal. El Auxiliar solo restablece accesos habilitados. **Accesos del personal** queda reservado a Presidencia. Omite `--mode demo` para usar el acceso local sin simulación.
 
-Abrir [http://127.0.0.1:5176/](http://127.0.0.1:5176/) en el navegador.
+La sesión y las cuentas se guardan en el navegador. Para compartir accesos entre dispositivos o publicar con datos reales se requiere autenticación y permisos en servidor.
+
+Si tienes un acceso vecinal anterior con prefijo VEC-, Presidencia debe abrir ese residente en el padrón, completar calle, número e interior si aplica y guardar para generar su nuevo ID.
+
+Al ingresar, Presidencia recibe un aviso con las altas pendientes del Auxiliar, incluidos los cargos de la Mesa Directiva. Tras aprobar el alta, la contraseña inicial del acceso vecinal se muestra una sola vez y debe cambiarse en el primer ingreso. Aprobar la pertenencia a la Mesa no otorga automáticamente los permisos de una cuenta administrativa.
